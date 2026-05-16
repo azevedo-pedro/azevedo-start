@@ -1,29 +1,37 @@
 #!/bin/bash
 
-source colors.sh
-
 msg_install "Installing Claude Code CLI"
 
 if command -v claude &>/dev/null; then
-  msg_checking "Claude Code already installed ($(claude --version))"
+  msg_checking "Claude Code already installed ($(claude --version 2>/dev/null || echo 'version unknown'))"
 else
-  npm install -g @anthropic-ai/claude-code
-  msg_ok "Claude Code installed"
+  # npm vem do Node instalado via mise — os shims foram adicionados ao PATH no environment.sh
+  if command -v npm &>/dev/null; then
+    if npm install -g @anthropic-ai/claude-code; then
+      msg_ok "Claude Code installed"
+    else
+      msg_alert "Claude Code install failed"
+      FAILED+=("claude-code (npm)")
+    fi
+  else
+    msg_alert "npm not found in PATH — Claude Code not installed"
+    FAILED+=("claude-code (npm not available)")
+  fi
 fi
 
 # ── Post-install reminders ────────────────────────────────────────────────────
-msg ""
-msg "┌─────────────────────────────────────────────────────────┐"
-msg "│  Manual steps required after setup:                    │"
-msg "│                                                         │"
-msg "│  1. Set your Azure DevOps PAT in ~/.zshrc:             │"
-msg "│     export AZURE_DEVOPS_EXT_PAT=<your-token>           │"
-msg "│                                                         │"
-msg "│  2. Update Azure DevOps org URL in:                    │"
-msg "│     ~/.claude/settings.json (mcpServers section)       │"
-msg "│                                                         │"
-msg "│  3. Run git-script.sh to set up SSH keys:              │"
-msg "│     bash ~/Developer/azevedo-start/settings/git/git-script.sh │"
-msg "│                                                         │"
-msg "│  4. Sign in to Claude:  claude login                   │"
-msg "└─────────────────────────────────────────────────────────┘"
+echo ""
+msg "┌─────────────────────────────────────────────────────────────┐"
+msg "│  Passos manuais após o setup:                               │"
+msg "│                                                             │"
+msg "│  1. Defina seu Azure DevOps PAT no ~/.zshrc:               │"
+msg "│     export AZURE_DEVOPS_EXT_PAT=<seu-token>                │"
+msg "│                                                             │"
+msg "│  2. Configure SSH keys para git:                           │"
+msg "│     bash ~/.azevedo-start/settings/git/git-script.sh       │"
+msg "│                                                             │"
+msg "│  3. Faça login no Claude:                                  │"
+msg "│     claude login                                            │"
+msg "│                                                             │"
+msg "│  4. Abra OrbStack e Raycast para finalizar a configuração  │"
+msg "└─────────────────────────────────────────────────────────────┘"

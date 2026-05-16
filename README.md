@@ -8,12 +8,34 @@ Setup script to restore a fresh macOS machine to my full dev environment.
 curl -L https://raw.github.com/azevedo-pedro/azevedo-start/main/install.sh | bash
 ```
 
-Or clone manually:
+The script clones the repo to `~/.azevedo-start` — a hidden folder directly in `~`, isolated from
+any dev projects inside `~/Developer/`. All config symlinks point there, so nothing breaks if you
+reorganize your project folders later.
+
+### Manual clone
+
+If you prefer to set it up yourself:
 
 ```bash
-git clone https://github.com/azevedo-pedro/azevedo-start.git ~/Developer/azevedo-start
-cd ~/Developer/azevedo-start
+git clone https://github.com/azevedo-pedro/azevedo-start.git ~/.azevedo-start
+cd ~/.azevedo-start
 bash install.sh
+```
+
+### Copying from an existing machine
+
+If you already have the repo somewhere (e.g. `~/Developer/azevedo-start`) and just want to move it
+to the canonical location before formatting:
+
+```bash
+cp -r ~/Developer/azevedo-start ~/.azevedo-start
+```
+
+Then push any local changes before formatting:
+
+```bash
+cd ~/.azevedo-start
+git push
 ```
 
 ## What gets installed
@@ -61,7 +83,7 @@ bash install.sh
 
 2. **Git SSH keys** — run the interactive script:
    ```bash
-   bash ~/Developer/azevedo-start/settings/git/git-script.sh
+   bash ~/.azevedo-start/settings/git/git-script.sh
    ```
 
 3. **Claude login**:

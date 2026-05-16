@@ -1,13 +1,17 @@
 #!/bin/bash
 
-source colors.sh
-
-START="$HOME/Developer/azevedo-start"
+START="$HOME/.azevedo-start"
 
 symlink() {
   local src="$1"
   local dest="$2"
   local label="$3"
+
+  # Segurança: não executa rm se algum dos paths estiver vazio
+  if [[ -z "$src" || -z "$dest" ]]; then
+    msg_alert "symlink: src ou dest vazio para '$label' — pulando"
+    return 1
+  fi
 
   if [ -e "$dest" ] || [ -L "$dest" ]; then
     msg_update "$label"
